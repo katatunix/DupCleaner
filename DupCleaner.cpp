@@ -50,11 +50,7 @@ bool DupCleaner::treeFindAndInsert(const char* key, int keyLen, const char*value
 {
 	if (!m_treeHead)
 	{
-		m_treeHead = new Node();
-		m_treeHead->key = key;
-		m_treeHead->keyLen = keyLen;
-		m_treeHead->value = value;
-		m_treeHead->valueLen = valueLen;
+		m_treeHead = new Node(key, keyLen, value, valueLen);
 		return true;
 	}
 	
@@ -69,29 +65,12 @@ bool DupCleaner::treeFindAndInsert(const char* key, int keyLen, const char*value
 			return false; // found
 		}
 		dad = node;
-		if (cmp < 0)
-		{
-			node = node->left;
-		}
-		else
-		{
-			node = node->right;
-		}
+		node = cmp < 0 ? node->left : node->right;
 	}
 	while (node);
 
-	node = new Node();
-	node->key = key; node->keyLen = keyLen;
-	node->value = value; node->valueLen = valueLen;
-
-	if (cmp < 0)
-	{
-		dad->left = node;
-	}
-	else
-	{
-		dad->right = node;
-	}
+	node = new Node(key, keyLen, value, valueLen);
+	cmp < 0 ? dad->left = node : dad->right = node;
 
 	return true; // a new node has been inserted
 }
